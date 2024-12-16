@@ -1,0 +1,30 @@
+version: 0.2
+
+env:
+  parameter-store:
+    USERNAME: "uname"
+    PASSWORD: "passwd"
+    IMAGENAME: "imgname"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    
+  pre_build:
+    commands:
+      - echo "installing dependencies"
+      - pip install -r requirements.txt
+    
+  build:
+    commands:
+      - echo "docker build"
+      - docker build -t $USERNAME/$IMAGENAME:latest .
+      - echo "docker login"
+      - docker login -u $USERNAME -p $PASSWORD
+      - echo "docker push"
+      - docker push $USERNAME/$IMAGENAME:latest
+      
+  post_build:
+    commands:
+      - echo "successful"
